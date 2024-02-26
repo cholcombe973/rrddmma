@@ -466,6 +466,21 @@ impl Qp {
         Ok(())
     }
 
+    pub fn modify_permissions(&self, access_flags: Permission) -> io::Result<()> {
+        let mut attr = unsafe { mem::zeroed::<ibv_qp_attr>() };
+        attr.qp_access_flags = access_flags.0 .0;
+
+        // SAFETY: FFI.
+        let ret = unsafe {
+            ibv_modify_qp(
+                self.as_raw(),
+                &mut attr,
+                ibv_qp_attr_mask::IBV_QP_ACCESS_FLAGS.0 as i32,
+            )
+        };
+        from_c_ret(ret)
+    }
+
     /// Reset the QP.
     /// Modify the QP to RESET state and clear any local port or remote peer
     /// bindings.

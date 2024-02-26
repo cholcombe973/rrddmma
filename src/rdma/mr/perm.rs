@@ -4,7 +4,7 @@ use crate::bindings::ibv_access_flags;
 
 /// Memory region permissions.
 #[repr(transparent)]
-pub struct Permission(ibv_access_flags);
+pub struct Permission(pub(crate) ibv_access_flags);
 
 impl Permission {
     pub const EMPTY: Self = Self(ibv_access_flags(0));
